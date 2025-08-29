@@ -26,7 +26,7 @@ pipeline {
                 echo "Initating Test..."
                 test -f build/index.html
                 npm ci
-                npm test
+                npm run test
                 '''
             }
         }
