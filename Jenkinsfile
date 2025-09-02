@@ -30,7 +30,7 @@ pipeline {
             steps{
                 sh'''
                 echo "Initating Test...13"
-                mkdir test-results
+                mkdir -p test-results
                 test -f build/index.html
                 npm test
                 '''
