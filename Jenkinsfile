@@ -2,6 +2,17 @@ pipeline {
     agent any
 
     stages {
+        // This is a comment for one liners
+        
+        /*
+        This is a block comment
+        line 2 
+        line 3
+        You could use this to disable a stage as npm tets is independent of build stage, 
+        we could use this style to not be a part of pipeline.
+        This is better for pipeline buildup
+        */
+
         stage('Build') {
             agent{
                 docker{
