@@ -62,7 +62,7 @@ pipeline {
                 npm install serve # -g is for global dependency
                 node_modules/.bin/serve -s build & # This & will not block the execution 
                 sleep 15 # To avoid commands starting one after the other, delay untill server is setup
-                npx playwright test
+                npx playwright test  --reporter=html
                 '''
             }
         }
