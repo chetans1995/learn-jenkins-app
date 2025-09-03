@@ -32,38 +32,42 @@ pipeline {
             }
         }
         */
-        stage('Test') {
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
+        stage('Tests'){
+            parallel{
+                stage('Unit Tests') {
+                    agent{
+                        docker{
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    steps{
+                        sh'''
+                        echo "Initating Test...13"
+                        mkdir -p test-results
+                        test -f build/index.html
+                        npm test
+                        '''
+                    }
                 }
-            }
-            steps{
-                sh'''
-                echo "Initating Test...13"
-                mkdir -p test-results
-                test -f build/index.html
-                npm test
-                '''
-            }
-        }
-                stage('E2E') {
-            agent{
-                docker{
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                    reuseNode true
-                    // args '-u root:root' - Is a bad idea as mounted with different username
+                        stage('E2E') {
+                    agent{
+                        docker{
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                            // args '-u root:root' - Is a bad idea as mounted with different username
 
+                        }
+                    }
+                    steps{
+                        sh'''
+                        npm install serve # -g is for global dependency
+                        node_modules/.bin/serve -s build & # This & will not block the execution 
+                        sleep 15 # To avoid commands starting one after the other, delay untill server is setup
+                        npx playwright test  --reporter=html
+                        '''
+                    }
                 }
-            }
-            steps{
-                sh'''
-                npm install serve # -g is for global dependency
-                node_modules/.bin/serve -s build & # This & will not block the execution 
-                sleep 15 # To avoid commands starting one after the other, delay untill server is setup
-                npx playwright test  --reporter=html
-                '''
             }
         }
     }
