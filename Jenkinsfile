@@ -90,7 +90,7 @@ pipeline {
                   npx netlify --version
                   echo "Deploying to production. Site ID:$NETLIFY_SITE_ID"
                   npx netlify status 
-                  npx netlify deploy 
+                  npx netlify deploy \
                     --auth $NETLIFY_AUTH_TOKEN \
                     --site $NETLIFY_SITE_ID \
                     --dir=build \
