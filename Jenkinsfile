@@ -66,7 +66,6 @@ pipeline {
                     }
                     steps{
                         sh'''
-                        npm ci
                         npm install serve # -g is for global dependency
                         node_modules/.bin/serve -s build & # This & will not block the execution 
                         sleep 15 # To avoid commands starting one after the other, delay untill server is setup
@@ -90,7 +89,7 @@ pipeline {
                   node_modules/.bin/netlify --version
                   echo "Deploying to production. Site ID:$NETLIFY_SITE_ID"
                   node_modules/.bin/netlify status
-                  node_modules/.bin/netlify deploy --dir=build --prod 
+                  #node_modules/.bin/netlify deploy --dir=build --prod 
                 '''
             }
         }
