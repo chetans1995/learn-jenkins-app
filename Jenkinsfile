@@ -12,7 +12,7 @@ pipeline {
         we could use this style to not be a part of pipeline.
         This is better for pipeline buildup
         */
-        /*
+        
         stage('Build') {
             agent{
                 docker{
@@ -31,7 +31,7 @@ pipeline {
                 '''
             }
         }
-        */
+        
         stage('Tests'){
             parallel{
                 stage('Unit Tests') {
@@ -68,6 +68,21 @@ pipeline {
                         '''
                     }
                 }
+            }
+        }
+
+                stage('Deploy') {
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                  npm install netlify-cli -g
+                  netlify --version
+                '''
             }
         }
     }
