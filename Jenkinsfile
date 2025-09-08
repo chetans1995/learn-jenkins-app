@@ -4,7 +4,6 @@ pipeline {
     environment{
         NETLIFY_SITE_ID = '3cd82567-95c3-4835-820c-52acf1ed35bc'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-        CI_ENVIRONMENT_URL = https://dreamy-pasca-c43c37.netlify.app/
     }
 
     stages {
