@@ -114,7 +114,7 @@ pipeline {
             }
 
             environment{
-                CI_ENVIRONMENT_URL = https://dreamy-pasca-c43c37.netlify.app/
+                CI_ENVIRONMENT_URL = 'https://dreamy-pasca-c43c37.netlify.app/'
             }
 
             steps{
