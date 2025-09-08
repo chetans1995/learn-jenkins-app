@@ -27,6 +27,7 @@ pipeline {
             }
             steps {
                 sh '''
+                echo 'Small Change'
                 ls -la
                 node --version
                 npm --version
@@ -48,10 +49,11 @@ pipeline {
                     }
                     steps{
                         sh'''
-                        echo "Initating Test...13"
+                        echo "Initating Test..."
                         mkdir -p test-results
                         test -f build/index.html
                         npm test
+                        echo 'Completed Test'
                         '''
                     }
                 }
@@ -70,6 +72,7 @@ pipeline {
                         node_modules/.bin/serve -s build & # This & will not block the execution 
                         sleep 15 # To avoid commands starting one after the other, delay untill server is setup
                         npx playwright test  --reporter=html
+                        echo 'E2E Completed'
                         '''
                     }
                 }
