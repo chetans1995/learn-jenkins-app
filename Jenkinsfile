@@ -4,6 +4,7 @@ pipeline {
     environment{
         NETLIFY_SITE_ID = '3cd82567-95c3-4835-820c-52acf1ed35bc'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        CI_ENVIRONMENT_URL = https://dreamy-pasca-c43c37.netlify.app/
     }
 
     stages {
@@ -57,7 +58,7 @@ pipeline {
                         '''
                     }
                 }
-                        stage('E2E') {
+                stage('E2E') {
                     agent{
                         docker{
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -75,11 +76,17 @@ pipeline {
                         echo 'E2E Completed'
                         '''
                     }
+                    post{
+                        always {
+            junit 'jest-results/junit.xml'
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local HTML Report', reportTitles: '', useWrapperFileDirectly: true])        
+                        }
+                    }
                 }
             }
         }
 
-                stage('Deploy') {
+        stage('Deploy') {
             agent{
                 docker{
                     image 'node:18-alpine'
@@ -96,10 +103,35 @@ pipeline {
                 '''
             }
         }
+
+        stage('Prod E2E') {
+            agent{
+                docker{
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                    // args '-u root:root' - Is a bad idea as mounted with different username
+
+                }
+            }
+
+            environment{
+                CI_ENVIRONMENT_URL = https://dreamy-pasca-c43c37.netlify.app/
+            }
+
+            steps{
+                sh'''
+                npx playwright test  --reporter=html
+                echo 'E2E Prod Completed'
+                '''
+            }
+
+            post{
+                always {
+                    junit 'jest-results/junit.xml'
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'PlaywrightE2E HTML Report', reportTitles: '', useWrapperFileDirectly: true])        
+                }
+           }
+        }
     }
-    post{
-        always {
-            junit 'jest-results/junit.xml'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])        }
-    }
+
 }
