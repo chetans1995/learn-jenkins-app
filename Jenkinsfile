@@ -85,7 +85,25 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy staging') {
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                  npm install netlify-cli
+                  node_modules/.bin/netlify --version
+                  echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
+                  node_modules/.bin/netlify status
+                  node_modules/.bin/netlify deploy --dir=build --no-build # removed --prod so Jenkins will create temporary preview environment
+                '''
+            }
+        }
+
+        stage('Deploy PROD') {
             agent{
                 docker{
                     image 'node:18-alpine'
