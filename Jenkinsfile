@@ -19,14 +19,6 @@ pipeline {
         This is better for pipeline buildup
         */
 
-
-        stage('Docker'){
-            steps{
-                sh 'docker build -t my-playwright .'
-            }
-        }
-
-
         stage('Build') {
             agent{
                 docker{
