@@ -69,7 +69,7 @@ pipeline {
                 stage('E2E') {
                     agent{
                         docker{
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            image 'my-playwright'
                             reuseNode true
                             // args '-u root:root' - Is a bad idea as mounted with different username
 
@@ -77,9 +77,8 @@ pipeline {
                     }
                     steps{
                         sh'''
-                        npm install serve # -g is for global dependency
-                        node_modules/.bin/serve -s build & # This & will not block the execution 
-                        sleep 15 # To avoid commands starting one after the other, delay untill server is setup
+                        serve -s build & # This & will not block the execution 
+                        sleep 10 # To avoid commands starting one after the other, delay untill server is setup
                         npx playwright test  --reporter=html
                         echo 'E2E Completed'
                         '''
