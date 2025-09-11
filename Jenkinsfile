@@ -98,7 +98,7 @@ pipeline {
         stage('Deploy staging') {
             agent{
                 docker{
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                     // args '-u root:root' - Is a bad idea as mounted with different username
                 }
@@ -110,12 +110,11 @@ pipeline {
 
             steps{
                 sh'''
-                npm install netlify-cli node-jq
-                node_modules/.bin/netlify --version
+                netlify --version
                 echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --no-build --json > deploy-output.json # removed --prod so Jenkins will create temporary preview environment
-                CI_ENVIRONMENT_URL="$(node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json)"
+                netlify status
+                netlify deploy --dir=build --no-build --json > deploy-output.json # removed --prod so Jenkins will create temporary preview environment
+                CI_ENVIRONMENT_URL="$(node-jq -r '.deploy_url' deploy-output.json)"
 
                 npx playwright test  --reporter=html
                 echo 'E2E Prod Completed'
@@ -134,7 +133,7 @@ pipeline {
         stage('Deploy Prod') {
             agent{
                 docker{
-                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    image 'my-playwright'
                     reuseNode true
                     // args '-u root:root' - Is a bad idea as mounted with different username
                 }
@@ -148,10 +147,10 @@ pipeline {
                 sh'''
                 node --version
                 npm install netlify-cli                                          # for Deploy
-                node_modules/.bin/netlify --version                              # for Deploy
+                netlify --version                                                # for Deploy
                 echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"        # for Deploy
-                node_modules/.bin/netlify status                                 # for Deploy
-                node_modules/.bin/netlify deploy --dir=build --no-build --prod   # for Deploy
+                netlify status                                                   # for Deploy
+                netlify deploy --dir=build --no-build --prod                     # for Deploy
                 sleep 5                                                          # need time for Netlify to respond
                 echo 'Deploy Prod Completed'
 
