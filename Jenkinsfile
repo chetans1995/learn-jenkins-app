@@ -18,7 +18,13 @@ pipeline {
         we could use this style to not be a part of pipeline.
         This is better for pipeline buildup
         */
-        
+
+
+        stage('Docker'){
+            sh 'docker build -t my-playwright .'
+        }
+
+
         stage('Build') {
             agent{
                 docker{
