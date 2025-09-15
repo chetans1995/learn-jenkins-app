@@ -19,6 +19,19 @@ pipeline {
         This is better for pipeline buildup
         */
 
+        stage('AWS'){
+            agent{
+                docker{
+                    image 'amazon/aws-cli'
+                }
+            }
+            steps{
+                sh '''
+                    aws --version
+                '''
+            }
+        } 
+
         stage('Build') {
             agent{
                 docker{
