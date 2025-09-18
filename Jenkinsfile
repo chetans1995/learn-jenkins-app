@@ -59,7 +59,7 @@ pipeline {
                     sh '''
                     docker build -t $AWS_DOCKER_REG/$APP_NAME:$REACT_APP_VERSION .
                     aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_DOCKER_REG
-                    docker push $AWS_DOCKER_REG/$APP_NAME:$REACT_APP_VERSION .
+                    docker push $AWS_DOCKER_REG/$APP_NAME:$REACT_APP_VERSION
                     '''
                 }
             }
