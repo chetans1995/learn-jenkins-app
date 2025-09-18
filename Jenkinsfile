@@ -34,6 +34,10 @@ pipeline {
                     aws --version
                     echo "Hello S3!" > index.html
                     aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+                    aws ecs update-service \
+                        --cluster LearnJenkinsApp-Cluster-Production \
+                        --service LearnJenkinsApp-Service-Prod \
+                        --task-definition LearJenkinsApp-TaskDefinition-Production:4
                 '''
                 }
             }
