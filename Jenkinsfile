@@ -21,6 +21,35 @@ pipeline {
         This is better for pipeline buildup
         */
 
+        stage('Build') {
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                echo 'Small Change'
+                ls -la
+                node --version
+                npm --version
+                npm ci
+                npm run build
+                ls -la
+                '''
+            }
+        }
+
+
+        stage('Build Docker Image'){
+            steps{
+                sh 'docker build -t myjenkinsapp .'
+            }
+        }
+
+
         stage('Deploy to AWS'){
             agent{
                 docker{
@@ -29,7 +58,6 @@ pipeline {
                     args "-u root --entrypoint=''"
                 }
             }
-
 
             steps{
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
@@ -52,24 +80,5 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                echo 'Small Change'
-                ls -la
-                node --version
-                npm --version
-                npm ci
-                npm run build
-                ls -la
-                '''
-            }
-        }
     }
 }
