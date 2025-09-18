@@ -40,6 +40,9 @@ pipeline {
                         --cluster LearnJenkinsApp-Cluster-Production \
                         --service LearnJenkinsApp-Service-Prod \
                         --task-definition LearJenkinsApp-TaskDefinition-Production:$LATEST_TD_REV
+                        aws ecs wait services-stable \
+                            --cluster LearnJenkinsApp-Cluster-Production \
+                            --services LearnJenkinsApp-Service-Prod
                 '''
                 }
             }
