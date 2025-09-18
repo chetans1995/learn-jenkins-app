@@ -65,7 +65,7 @@ pipeline {
                 docker{
                     image 'my-aws-cli'
                     reuseNode true
-                    args "--entrypoint=''"
+                    args "-u root --entrypoint=''"
                 }
             }
 
