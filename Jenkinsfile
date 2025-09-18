@@ -43,7 +43,7 @@ pipeline {
                     aws ecs update-service \
                         --cluster $AWS_ECS_CLUSTER \
                         --service $AWS_ECS_SERVICE_PROD \
-                        --task-definition AWS_ECS_TD_PROD:$LATEST_TD_REV
+                        --task-definition $AWS_ECS_TD_PROD:$LATEST_TD_REV
                         aws ecs wait services-stable \
                             --cluster $AWS_ECS_CLUSTER \
                             --services $AWS_ECS_SERVICE_PROD
